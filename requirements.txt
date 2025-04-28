@@ -1,3 +1,2 @@
 python-telegram-bot==20.0  # Replace with the correct version if needed
-
-yt-dlp==2023.2.4
+yt-dlp==2025.3.31
