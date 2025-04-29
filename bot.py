@@ -6,17 +6,19 @@ import yt_dlp
 # Your Telegram Bot Token
 BOT_TOKEN = os.environ.get('BOT_TOKEN')
 
+# Health Check Function
 async def health_check(context: ContextTypes.DEFAULT_TYPE):
     # Replace with your Telegram user ID (or a private chat ID)
     your_chat_id = 857216172  # <-- Change this to YOUR ID
     await context.bot.send_message(chat_id=your_chat_id, text="✅ Bot is alive and running!")
+
 # Download function using yt-dlp
 def download_video(url):
     ydl_opts = {
         'format': 'best',
         'outtmpl': '/tmp/%(title)s.%(ext)s',
     }
-    
+
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info_dict = ydl.extract_info(url, download=True)
@@ -25,7 +27,6 @@ def download_video(url):
     except Exception as e:
         print(f"Error downloading video: {str(e)}")
         return None
-
 
 # /start command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -40,19 +41,29 @@ async def download(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         video_file = download_video(video_url)
-        with open(video_file, 'rb') as video:
-            await update.message.reply_video(video)
+        if video_file:
+            with open(video_file, 'rb') as video:
+                await update.message.reply_video(video)
+        else:
+            await update.message.reply_text("Failed to download video.")
     except Exception as e:
         await update.message.reply_text(f"Error: {str(e)}")
 
 # Main bot setup
-app = ApplicationBuilder().token(BOT_TOKEN).build()
+async def main():
+    app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-app.add_handler(CommandHandler("start", start))
-app.add_handler(CommandHandler("download", download))
-app.job_queue.run_once(health_check, when=5)
+    # Adding Handlers
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("download", download))
 
-app.run_polling()
+    # Health check every 5 seconds
+    app.job_queue.run_once(health_check, when=5)
 
+    # Start polling
+    await app.run_polling()
 
-
+# Run the main function
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
