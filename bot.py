@@ -2,6 +2,7 @@ import os
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 import yt_dlp
+import asyncio
 
 # Your Telegram Bot Token
 BOT_TOKEN = os.environ.get('BOT_TOKEN')
@@ -63,7 +64,8 @@ async def main():
     # Start polling
     await app.run_polling()
 
-# Run the main function
+# Start the bot in an already running event loop (fix for 'This event loop is already running' error)
 if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
+    # If already running in an event loop, just run the main function
+    loop = asyncio.get_event_loop()
+    loop.create_task(main())
