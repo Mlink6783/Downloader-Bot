@@ -64,8 +64,11 @@ async def main():
     # Start polling
     await app.run_polling()
 
-# Start the bot in an already running event loop (fix for 'This event loop is already running' error)
+# Ensure to start the bot in an existing event loop
 if __name__ == "__main__":
-    # If already running in an event loop, just run the main function
-    loop = asyncio.get_event_loop()
-    loop.create_task(main())
+    try:
+        # Attempt to start the bot using an already running event loop
+        asyncio.get_event_loop().create_task(main())
+    except RuntimeError as e:
+        # If no event loop is found, use asyncio.run() (which works in many environments)
+        asyncio.run(main())
