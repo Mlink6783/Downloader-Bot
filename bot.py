@@ -6,6 +6,10 @@ import yt_dlp
 # Your Telegram Bot Token
 BOT_TOKEN = os.environ.get('BOT_TOKEN')
 
+async def health_check(context: ContextTypes.DEFAULT_TYPE):
+    # Replace with your Telegram user ID (or a private chat ID)
+    your_chat_id = 857216172  # <-- Change this to YOUR ID
+    await context.bot.send_message(chat_id=your_chat_id, text="✅ Bot is alive and running!")
 # Download function using yt-dlp
 def download_video(url):
     ydl_opts = {
@@ -41,6 +45,9 @@ app = ApplicationBuilder().token(BOT_TOKEN).build()
 
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CommandHandler("download", download))
+app.job_queue.run_once(health_check, when=5)
 
 app.run_polling()
+
+
 
