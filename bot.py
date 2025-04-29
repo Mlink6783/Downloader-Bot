@@ -14,13 +14,18 @@ async def health_check(context: ContextTypes.DEFAULT_TYPE):
 def download_video(url):
     ydl_opts = {
         'format': 'best',
-        'outtmpl': '/tmp/%(title)s.%(ext)s',  # Temporary file save location
+        'outtmpl': '/tmp/%(title)s.%(ext)s',
     }
+    
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info_dict = ydl.extract_info(url, download=True)
+            filename = ydl.prepare_filename(info_dict)
+            return filename
+    except Exception as e:
+        print(f"Error downloading video: {str(e)}")
+        return None
 
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info_dict = ydl.extract_info(url, download=True)
-        filename = ydl.prepare_filename(info_dict)
-        return filename
 
 # /start command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
