@@ -43,3 +43,4 @@ app.add_handler(CommandHandler("start", start))
 app.add_handler(CommandHandler("download", download))
 
 app.run_polling()
+app.idle()
