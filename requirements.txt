@@ -1,2 +1,2 @@
-python-telegram-bot==20.4  # Replace with the correct version if needed
+python-telegram-bot[job-queue]==20.4  # Replace with the correct version if needed
 yt-dlp==2025.3.31
