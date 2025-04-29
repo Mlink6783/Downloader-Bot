@@ -1,0 +1,10 @@
+{
+  "build": {
+    "env": {
+      "PIP_NO_CACHE_DIR": "off"
+    }
+  },
+  "deploy": {
+    "startCommand": "python bot.py"
+  }
+}
