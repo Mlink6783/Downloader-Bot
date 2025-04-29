@@ -64,6 +64,8 @@ async def main():
     # Start polling
     await app.run_polling()
 
-# Ensure to start the bot using asyncio.run() which will handle the event loop
+# Entry point
 if __name__ == "__main__":
-    asyncio.run(main())  # Run the bot using asyncio.run()
+    # Get the current running event loop and run the bot
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
